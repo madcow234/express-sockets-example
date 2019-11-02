@@ -21,11 +21,9 @@
       form input {
         border: 0;
         padding: 10px;
-        width: 90%;
-        margin-right: 0.5%;
       }
       form button {
-        width: 9%;
+        width: calc(10% - 8px);
         background: rgb(130, 224, 255);
         border: none;
         padding: 10px;
@@ -41,12 +39,20 @@
       #messages li:nth-child(odd) {
         background: #eee;
       }
+      #username {
+        width: 18em;
+      }
+      #message {
+        width: calc(90% - 18em);
+      }
     </style>
   </head>
   <body>
     <ul id="messages"></ul>
     <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+      <input id="username" autocomplete="off" placeholder="Username" />
+      <input id="message" autocomplete="off" placeholder="Type a message..." />
+      <button>Send</button>
     </form>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -57,12 +63,17 @@
         var socket = io();
         $('form').submit(function(e) {
           e.preventDefault();
-          socket.emit('messages', $('#m').val());
-          $('#m').val('');
+          socket.emit('messages', {
+            username: $('#username').val() || '(anonymous)',
+            message: $('#message').val()
+          });
+          $('#message').val('');
           return false;
         });
-        socket.on('messages', function(msg) {
-          $('#messages').append($('<li>').text(msg));
+        socket.on('messages', function(data) {
+          $('#messages').append(
+            $('<li>').text(data.username + ': ' + data.message)
+          );
         });
         socket.on('connections', function(msg) {
           $('#messages').append($('<li>').text(msg));

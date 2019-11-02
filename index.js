@@ -17,8 +17,8 @@ io.on('connection', function(socket) {
 });
 
 io.on('connection', function(socket) {
-  socket.on('messages', function(msg) {
-    io.emit('messages', msg);
+  socket.on('messages', function(data) {
+    io.emit('messages', data);
   });
 });
 
