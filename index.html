@@ -76,6 +76,7 @@
     <script>
       $(function() {
         var socket = io();
+        var typingList = new Array();
 
         $('#messages').append($('<li>').text('You are connected.'));
 
@@ -99,7 +100,9 @@
           if ($('#message').val() === '') {
             socket.emit('stopped_typing', username);
           } else {
-            socket.emit('started_typing', username);
+            if (!typingList.includes(username)) {
+              socket.emit('started_typing', username);
+            }
           }
 
           var prevMessage = $('#message').val();
@@ -121,6 +124,7 @@
         });
 
         socket.on('typing_status', function(currentlyTypingList) {
+          typingList = currentlyTypingList;
           $('#typing-status-message').remove();
           if (currentlyTypingList.length === 1) {
             $('#typing-status').append(
