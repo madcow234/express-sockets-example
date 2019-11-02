@@ -63,10 +63,14 @@
         var socket = io();
         $('form').submit(function(e) {
           e.preventDefault();
-          socket.emit('messages', {
+          var messageData = {
             username: $('#username').val() || '(anonymous)',
             message: $('#message').val()
-          });
+          };
+          socket.emit('messages', messageData);
+          $('#messages').append(
+            $('<li>').text(messageData.username + ': ' + messageData.message)
+          );
           $('#message').val('');
           return false;
         });
